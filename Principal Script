@@ -1,0 +1,714 @@
+## Packages required
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+library(IlluminaHumanMethylationEPICv2manifest)
+library(IlluminaHumanMethylation450kmanifest)
+library(IlluminaHumanMethylationEPICmanifest)
+library(IlluminaHumanMethylationEPICv2anno.20a1.hg38) #Genyo
+library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+library(IlluminaHumanMethylationEPICanno.ilm10b5.hg38)
+library(liftOver)
+library(readr)
+library(dplyr)
+library(tidyr)
+
+# LOADING THE DATA 
+## Annotation data
+annEPICv2<-getAnnotation(IlluminaHumanMethylationEPICv2anno.20a1.hg38)
+ann450k<-getAnnotation(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+annEPIC<-getAnnotation(IlluminaHumanMethylationEPICanno.ilm10b4.hg19)
+
+## Path to data directory 
+dataDirectory<-paste(getwd(),"", sep="/")
+
+
+## Read data sheet from PDATA             
+##########################GSE55491
+numeros_impares<-c()
+for (i in 1:1000) {
+  numeros_impares[i] <- 2 * i - 1
+}
+GSE<-"GSE55491"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+##########################GSE108423
+GSE<-"GSE108423"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+##########################GSE116300
+GSE<-"GSE116300"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv")) #ya contiene array/slide
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))
+
+##########################GSE116992              datasheet en dos partes
+GSE<-"GSE116992"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets2, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))
+
+GSE<-"GSE116992_EPIC"
+targets2<-read_csv(paste0("~/DATASET_GEO/", GSE, ".2.samples.csv"))
+
+targets<-read.metharray.sheet(paste0("~/", GSE), pattern = GSE)
+rgSet<-read.metharray.exp(base=paste0("~/", GSE), targets=targets, force = T)
+rgSet
+
+##########################GSE119778
+GSE<-"GSE119778"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+##########################GSE125367
+GSE<-"GSE125367"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+##########################GSE167230                DATASHEET INCOMPLETO
+GSE<-"GSE167230"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))
+
+GSE<-"GSE167230_EPIC"
+targets2<-read_csv(paste0("~/DATASET_GEO/", GSE, ".2.samples.csv"))
+
+##########################GSE174555
+GSE<-"GSE174555"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+##########################GSE218186
+GSE<-"GSE218186"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+##########################GSE221745
+GSE<-"GSE221745"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".2.samples.csv"))
+patron_unido <- paste(targets$geo_accession, collapse = '|')
+archivos <- list.files(paste0("~/", GSE), pattern = patron_unido)
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".2.samples.csv"))  
+
+##########################GSE66552
+GSE<-"GSE66552"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".2.samples.csv"))
+patron_unido <- paste(targets$geo_accession, collapse = '|')
+archivos <- list.files(paste0("~/", GSE), pattern = patron_unido)
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".2.samples.csv"))  
+
+##########################GSE74432
+GSE<-"GSE74432"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".2.samples.csv"))
+patron_unido <- paste(targets$geo_accession, collapse = '|')
+archivos <- list.files(paste0("~/", GSE), pattern = patron_unido)
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+targets<-targets %>% 
+  mutate(Sex = recode(Sex, "female" = "Female", "male"="Male"))
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".2.samples.csv"))  
+
+##########################GSE85210
+GSE<-"GSE85210"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+
+##########################GSE87571
+GSE<-"GSE87571"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+##########################GSE99863
+GSE<-"GSE99863"
+targets<-read_csv(paste0("~/DATASET_GEO/", GSE, ".samples.csv"))
+archivos <- list.files(paste0("~/", GSE), pattern = "\\.idat.gz$")
+archivos<-archivos[-numeros_impares]
+lista_array<-c()
+lista_slide<-c()
+for (i in 1:length(archivos)) {
+  array<-sub(".*_(R\\d+C\\d+)_.*", "\\1", archivos[i])
+  lista_array<-rbind(lista_array, array)
+  slide<-sub(".*_(\\d+)_.*", "\\1", archivos[i])
+  lista_slide<-rbind(lista_slide, slide)
+}
+targets<-cbind(targets, Array=lista_array, Slide=lista_slide)
+
+write.csv(targets, file=paste0("~/", GSE, "/", GSE, ".samples.csv"))  
+
+
+## Read raw data from IDAT files
+#Combinar data signature 'RGChannelSet,RGChannelSet'
+#Lista sin el primer 
+lista<-c("GSE116300", "GSE116992", "GSE116992_EPIC",
+         "GSE119778", "GSE125367", "GSE167230", "GSE167230_EPIC",
+         "GSE174555", "GSE218186", "GSE221745", "GSE55491",
+         "GSE66552", "GSE74432", "GSE85210", "GSE87571", "GSE99863")
+
+targets1<-read.metharray.sheet(paste0("~/", "GSE108423"), pattern = "GSE108423")
+rgSet_final<-read.metharray.exp(base=paste0("~/", "GSE108423"), targets=targets1)
+for (GSE in lista) {
+  targets<-read.metharray.sheet(paste0("~/", GSE), pattern = GSE)
+  rgSet<-read.metharray.exp(base=paste0("~/", GSE), targets=targets, force=T)
+  rgSet_final<-combineArrays(rgSet_final, rgSet,
+              outType = c("IlluminaHumanMethylation450k"),
+              verbose = TRUE)
+}
+rgSet_final
+
+## Combinar datasheet, nos aseguramos así incluir los datos en el mismo orden
+targets1$Disease<-c(rep("Claes-Jensen", 7), rep("Control", nrow(targets1) - 7))
+targets1<-targets1 %>% 
+  mutate(Sex = recode(Sex, "male" = "Male", "female"="Female"))
+
+targets<-read.metharray.sheet(paste0("~/", lista[1]), pattern = lista[1])
+targets$Disease<-c(rep("Control", 9), rep("Kabuki", 29), rep("Control", 6))
+targets<-targets %>% 
+  mutate(Sex = recode(Sex, "M" = "Male", "F"="Female"))
+targets$X <- as.character(targets$X)
+targets_final<-full_join(targets1, targets, by=names(targets1))
+
+targets<-read.metharray.sheet(paste0("~/", lista[2]), pattern = lista[2])
+targets$Disease<-c(rep("BAFopathy", 7))
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[3]), pattern = lista[3])
+targets$Disease<-c(rep("BAFopathy", nrow(targets)))
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[4]), pattern = lista[4])
+targets<-rename(targets, Disease=diagnosis, Sex=gender)
+targets<-targets %>% 
+  mutate(Disease = recode(Disease, "Williams syndrome (WS)" = "Williams"))
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[5]), pattern = lista[5])
+targets$Disease<-c(rep("Control", 27), rep("BAFopathy", nrow(targets)-27))
+targets<-targets %>% 
+  mutate(Sex = recode(Sex, "F" = "Female", "M"="Male"))
+targets<-rename(targets, Age=age..years.)
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[6]), pattern = lista[6])    
+targets$Disease<-c(rep("ICF", 2))
+targets<-rename(targets, Sex=gender)
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[7]), pattern = lista[7])    
+targets$Disease<-c(rep("ICF", 1), rep("Sotos", 2), rep("TBRS", 2))
+targets<-rename(targets, Sex=gender)
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[8]), pattern = lista[8])   
+targets<-separate(targets, tissue, into = c("Sex", "tissue"), sep = ",")
+targets<-targets[,-2]
+targets<-rename(targets, Disease=gender, Age=disease.state, geo_accession=age, Sample_Name=geo_accession)
+targets<-targets %>% 
+  mutate(Disease = recode(Disease, "normal" = "Control", "Down syndrome (Trisomy 21)" = "Down"))
+targets$Age<-as.numeric(gsub(" mos.", "", targets$Age))/12
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[9]), pattern = lista[9])
+targets<-rename(targets, Disease=disease.state)
+targets<-targets %>% 
+  mutate(Disease = recode(Disease, "Kabuki syndrome" = "Kabuki"))
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[10]), pattern = lista[10])   
+targets$Disease<-c(rep("GATA2", 5), rep("Control", 5), rep("GATA2", 3))
+targets$Age<-as.numeric(targets$Age)
+targets<-targets[,-4]
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[11]), pattern = lista[11])
+targets<-targets[, -c(2,3)]
+targets<-rename(targets, Disease=disease.state, Sex=gender)
+targets<-targets %>% 
+  mutate(Disease = recode(Disease, "normal" = "Control", "SRS" = "Silver-Russell"))
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[12]), pattern = lista[12])
+targets<-rename(targets, Disease=group)
+targets<-targets %>% 
+  mutate(Disease = recode(Disease, "TD control" = "Control", "WS" = "Williams"))
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[13]), pattern = lista[13]) 
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[14]), pattern = lista[14])
+targets$Disease<-c(rep("Control", nrow(targets)))
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[15]), pattern = lista[15])
+targets<-rename(targets, Disease=disease.state, Age=age)
+targets<-targets %>% 
+  mutate(Disease = recode(Disease, "normal" = "Control"))
+targets$Age<-as.numeric(targets$Age)
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+targets<-read.metharray.sheet(paste0("~/", lista[16]), pattern = lista[16])
+targets$Disease<-c(rep("Control", nrow(targets)))
+targets<-targets %>% 
+  mutate(Sex = recode(Sex, "M" = "Male", "F"="Female"))
+targets_final<-full_join(targets_final, targets, by=intersect(names(targets), names(targets_final)))
+
+dim(targets_final)
+
+#Give the samples descriptive names
+targets_final$ID<-with(targets_final, ave(Disease, Disease, FUN = function(x) seq_along(x)))
+targets_final$ID<-paste0(targets_final$Disease, ".", targets_final$ID)
+sampleNames(rgSet_final)<-targets_final$ID
+rgSet_final
+
+targets_GSE<-c()
+for (i in 1:length(targets_final$Basename)) {
+  GSE<-unlist(strsplit(targets_final$Basename[i], "/"))[4]
+  targets_GSE<-rbind(targets_GSE, GSE)
+}
+targets_final<-cbind(targets_final, GSE=targets_GSE)
+
+targets_final$Sex<-paste0(targets_final$Sex, targets_final$gender)
+targets_final$Sex<-gsub("NA", "", targets_final$Sex)
+targets_final<-targets_final %>% 
+  mutate(Sex = recode(Sex, "female" = "Female", "F"="Female",
+                            "male"="Male", "M"="Male"))
+targets_final$Sex<-ifelse(targets_final$Sex == "Male" | targets_final$Sex == "Female", targets_final$Sex, "Indetermined")
+targets_final$Platform <- 
+  ifelse(targets_final$GSE %in% c("GSE108423", "GSE116300", "GSE116992", 
+                                  "GSE119778", "GSE167230", "GSE174555", 
+                                  "GSE55491", "GSE66552", "GSE74432", 
+                                  "GSE85210", "GSE87571", "GSE99863"), 
+         "450k", "EPIC")
+
+
+# QUALITY CONTROL 
+## Detection p-values -- Compara señal total de cada sonda con señal background
+detP_final55555<-detectionP(rgSet_final)
+detP_final
+
+#Graficar p.value promedio para identificar muestras de mala calidad, >0.05
+library(RColorBrewer)
+pal <- c("#A6CEE3", "#1F78B4", "#B2DF8A", "#66A61E", "#FB9A99", 
+         "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A", 
+         "#FFD700", "#B15928", "#B2182B", "#666666", "#E7298A", 
+         "#1B9E77", "#053061")
+barplot(colMeans(detP_final), col=pal[factor(targets_final$ID)], las=2, 
+        cex.names=0.8, ylim=c(0,0.15), main="Mean detection p-values per sample",
+        names.arg = FALSE)
+abline(h=0.05,col="red")
+
+
+#Eliminar muestras con mala calidad de objeto RG, targets y matriz p.valor
+keep_final<-colMeans(detP_final) < 0.05 #Filtra muestras de mala calidad
+table(keep_final)
+rgSet_final<-rgSet_final[,keep_final]
+rgSet_final #Nuevo objeto RG
+
+targets_final<-targets_final[keep_final,]
+
+detP_final<-detP_final[,keep_final]
+dim(detP_final)
+barplot(colMeans(detP_final), col=pal[factor(targets_final$Disease)], las=2, 
+        cex.names=0.8, ylim=c(0,0.15), main="Mean detection p-values per sample",
+        names.arg = FALSE)
+abline(h=0.05,col="red")
+
+qcReport(rgSet_final, sampNames=targets_final$ID, sampGroups=targets_final$Disease, 
+         pdf="qcReport_final.pdf")
+
+# NORMALISATION 
+mSetSq_final<-preprocessQuantile(rgSet_final) #Objeto GenomicRatioSet, class holding M or/and Beta values together with associated genomic coordinates
+mSetFn_final<-preprocessFunnorm(rgSet_final)
+mSetRaw_final<-preprocessRaw(rgSet_final) #Objeto MethylSet para graficar
+
+par(mfrow=c(1,2))
+densityPlot(mSetRaw_final, sampGroups=targets_final$Disease, main="Raw", 
+            legend=FALSE, pal=pal)
+legend("top", legend = levels(factor(targets_final$Disease)), 
+       text.col=pal[factor(sort(unique(targets_final$Disease)))])
+densityPlot(getBeta(mSetFn_final), sampGroups=targets_final$Disease,
+            main="Normalized", legend=FALSE, pal=pal)
+legend("top", legend = levels(factor(targets_final$Disease)), 
+       text.col=pal[factor(sort(unique(targets_final$Disease)))])
+
+# DATA EXPLORATION 
+qc<-getQC(mSetRaw_final)
+
+library(limma)
+par(mfrow=c(1,1))
+plotMDS(getM(mSetFn_final), top=1000, gene.selection="common", 
+        col=pal[factor(targets_final$Platform)], pch=20)
+plotMDS(getM(mSetFn_final), top=1000, gene.selection="common", 
+        col=pal[factor(targets_final$Disease)], dim=c(3,4), pch=20)
+legend("top", legend=levels(factor(targets_final$Disease)), text.col=pal,
+       bg="white", cex=0.7)
+title("Multi-dimensionaL scaling (MDS) by Disease", cex.main = 1.5)
+
+
+library(viridis)
+library(fields)
+palcont<-viridis(100)  # 100 colores
+
+#Crear una función para asignar colores basados en la escala de Age
+age_colors<-palcont[cut(targets_final$Age, breaks = 100, labels = FALSE)]
+age_colors[is.na(targets_final$Age)]<-"#FF0000"  # Asignar rojo a los valores NA
+
+#Crear el gráfico plotMDS con colores continuos
+plotMDS(getM(mSetFnFlt_final), top=1000, gene.selection="common", 
+        col=age_colors, pch=20)
+title("Multi-dimensionaL scaling (MDS) by Age", cex.main = 1.5)
+par(mar = c(5, 4, 4, 2) + 0.1)
+par(xpd = TRUE)
+image.plot(zlim = range(targets_final$Age, na.rm = TRUE), legend.only = TRUE,
+           col = palcont, horizontal = TRUE, legend.shrink = 0.5,
+           legend.width = 1, legend.mar = 3,
+           smallplot = c(0.2, 0.8, 0.1, 0.15),
+           axis.args = list(at = pretty(range(targets_final$Age, na.rm = TRUE)),
+                            labels = pretty(range(targets_final$Age, na.rm = TRUE))))
+legend("topright", legend = "NA", col = "#FF0000", bty = "n")
+
+
+
+# FILTERING
+#ensure probes are in the same order in the mSetSq and detP objects
+detP_final<-detP_final[match(featureNames(mSetFn_final),rownames(detP_final)),] 
+
+## remove any probes that have failed in one or more samples
+keep_final<-rowSums(detP_final < 0.01) == ncol(mSetFn_final) 
+table(keep_final)
+
+mSetFnFlt_final<-mSetFn_final[keep_final,]
+mSetFnFlt_final  
+  
+## if your data includes males and females, remove probes on the sex chromosomes
+keep_final<-!(featureNames(mSetFnFlt_final) %in% ann450k$Name[ann450k$chr %in% 
+                                                      c("chrX","chrY")])
+table(keep_final)
+mSetFnFlt_final<-mSetFnFlt_final[keep_final,]  
+
+## remove probes with SNPs at CpG site
+mSetFnFlt_final<-dropLociWithSnps(mSetFnFlt_final)
+mSetFnFlt_final
+
+## exclude cross reactive probes
+xReactiveProbes<-read.csv("48639-non-specific-probes-Illumina450k.csv",
+                          stringsAsFactors=FALSE)
+keep_final<-!(featureNames(mSetFnFlt_final) %in% xReactiveProbes$TargetID)
+table(keep_final)
+mSetFnFlt_final<-mSetFnFlt_final[keep_final,]
+
+## re-examine the MDS plots
+par(mfrow=c(1,1))
+plotMDS(getM(mSetFnFlt_final), top=1000, gene.selection="common", 
+        col=pal[factor(targets_final$GSE)], pch=20)
+legend("topright", legend=levels(factor(targets_final$GSE)), text.col=pal,
+       bg="white", cex=0.7)
+title("Multi-dimensional scaling (MDS) by GSE", cex.main = 1.5)
+
+#calculate M-values for statistical analysis
+mVals_final<-getM(mSetFnFlt_final)
+head(mVals_final[,1:5])
+
+bVals_final<-getBeta(mSetFnFlt_final)
+head(bVals_final[,1:5])
+
+par(mfrow=c(1,2))
+densityPlot(bVals_final, sampGroups=targets_final$Disease, main="Beta values", 
+            legend=FALSE, pal=pal, xlab = "Beta values")
+legend("top", legend = levels(factor(targets_final$Disease)), inset = c(0, 0),
+       text.col=pal[factor(sort(unique(targets_final$Disease)))], cex = 0.65 )
+densityPlot(mVals_final, sampGroups=targets_final$Disease, main="M-values", 
+            legend=FALSE, pal=pal, xlab="M-values")
+
+
+# PROBE-WISE DIFFERENTIAL METHYLATION 
+unique(targets_final$Disease) #contenido de la columna
+targets_final$Disease<-factor(targets_final$Disease)
+levels(targets_final$Disease)
+targets_final$Disease<-relevel(targets_final$Disease, ref = "Control")
+levels(targets_final$Disease) #verificar
+
+dmp_final<-dmpFinder(bVals_final, pheno=targets_final$Disease, 
+                     type = "continuous", shrinkVar=TRUE)
+head(dmp_final)
+
+# MODELO SUPPORT VECTOR MACHINE 
+lista_sondas<-rownames(dmp_final)[1:1000]
+data<-bVals_final[lista_sondas,]
+data<-t(data)
+rownames(data)<-NULL
+targets_final$Disease<-as.character(targets_final$Disease)
+
+data_modelo<-cbind(data,targets_final$Disease)
+colnames(data_modelo)[1001]<-"Disease"
+data_modelo<-as.data.frame(data_modelo)
+data_modelo<-data_modelo %>%
+  mutate(across(1:1000, as.numeric))
+
+## t-SNE
+library(Rtsne)
+library(ggplot2)
+library(stats)
+set.seed(123)
+pca_result<-prcomp(data_modelo[,1:1000], scale. = TRUE)
+pca_data<-pca_result$x[, 1:50]
+tsne_result<-Rtsne(pca_data, dims = 2, perplexity = 30, verbose = TRUE, max_iter = 500)
+tsne_data<-as.data.frame(tsne_result$Y)
+colnames(tsne_data)<-c("Dim1", "Dim2")
+tsne_data$Disease<-as.factor(data_modelo$Disease)
+ggplot(tsne_data, aes(x = Dim1, y = Dim2, color = Disease)) +
+  geom_point(size = 1) +
+  labs(title = "t-SNE with Defined Classification",
+       x = "Dimension 1",
+       y = "Dimension 2") +
+  theme_minimal()
+
+tsne_data_filtered <- tsne_data %>% filter(Disease != "Control")
+ggplot(tsne_data_filtered, aes(x = Dim1, y = Dim2, color = Disease)) +
+  geom_point(size = 1) +
+  labs(title = "t-SNE with Defined Classification (Excluding Group Control)",
+       x = "Dimension 1",
+       y = "Dimension 2") +
+  theme_minimal()
+
+pca_result_filt<-prcomp(data_modelo[data_modelo$Disease != 'Control',1:1000], scale. = TRUE)
+pca_data_filt<-pca_result_filt$x[, 1:50]
+tsne_result_filt<-Rtsne(pca_data_filt, dims = 2, perplexity = 30, verbose = TRUE, max_iter = 500)
+tsne_data_filt<-as.data.frame(tsne_result_filt$Y)
+colnames(tsne_data_filt)<-c("Dim1", "Dim2")
+tsne_data_filt$Disease<-as.factor(data_modelo$Disease[data_modelo$Disease != 'Control'])
+ggplot(tsne_data_filt, aes(x = Dim1, y = Dim2, color = Disease)) +
+  geom_point(size = 1) +
+  labs(title = "t-SNE with Defined Classification (Excluding Group Control from the analysis)",
+       x = "Dimension 1",
+       y = "Dimension 2") +
+  theme_minimal()
+
+#separar datos en training y test data
+n<-nrow(data_modelo)
+for (i in 1:5000) {
+  set.seed(i)
+  train<-sample(n, floor(n * 0.9))
+  data_modelo.train<-data_modelo[train,]
+  data_modelo.test<-data_modelo[-train,]
+  
+  if (length(table(data_modelo.train$Disease)) == length(unique(targets_final$Disease)) &&
+      length(table(data_modelo.test$Disease)) == length(unique(targets_final$Disease))) {
+    cat("El bucle se detuvo en i =", i, "\n")
+    encontrado<-TRUE
+    valor<-i
+    break
+  }
+}
+
+set.seed(1255)
+train<-sample(n, floor(n * 0.9))
+data_modelo.train<-data_modelo[train,1:1001]
+data_modelo.test<-data_modelo[-train,]
+table(data_modelo.train$Disease)
+table(data_modelo.test$Disease)
+
+################################################################################
+library(e1071)
+data_modelo.train$Disease<-as.factor(data_modelo.train$Disease)
+data_modelo.test$Disease<-as.factor(data_modelo.test$Disease)
+set.seed(321)
+tune_1<-tune.svm(Disease~., data=data_modelo.train, kernel="linear",
+                  cost = c(0.001, 0.01, 0.1, 1, 5, 10, 50))
+summary(tune_1)
+
+library(ggplot2)
+ggplot(data = tune_1$performances, aes(x = cost, y = error)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Error de validación ~ hiperparámetro C") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+modelo_svm1<-svm(Disease~., data=data_modelo.train, 
+            method="C-classification", kernal="lineal", cost=tune_1$best.parameters$cost)
+summary(modelo_svm1)
+
+svm1_pred<-predict(modelo_svm1, data_modelo.test)
+table(data_modelo.test$Disease, svm1_pred)
+confusionMatrix(table(svm1_pred, data_modelo.test$Disease), positive="Control")$overall[1]
+
+# K-NN 
+set.seed(valor)
+train<-sample(n, floor(n * 0.9), replace=F)
+data_modelo.train<-data_modelo[train, 1:1000]
+data_modelo.test<-data_modelo[-train, 1:1000]
+
+data_modelo.train_labels<-as.factor(targets_final$Disease[train])
+data_modelo.test_labels<-as.factor(targets_final$Disease[-train])
+table(data_modelo.train_labels)
+table(data_modelo.test_labels)
+
+library(class)
+library(caret)
+
+pred_knn<-c("knn_test_pred1", "knn_test_pred3", "knn_test_pred5", "knn_test_pred7")
+resumen_knn<-data.frame(Modelo=pred_knn, Accuracy = NA, Kappa = NA, AccuracyLower = NA, AccuracyUpper = NA)
+index<-1
+for (i in seq(from=1, to=7, by=2)) {
+  set.seed(valor)
+  knn_pred<-knn(train=data_modelo.train, test=data_modelo.test, cl=data_modelo.train_labels, k=i)
+  cmatrix<-confusionMatrix(data = knn_pred, reference = data_modelo.test_labels)
+  print(cmatrix)   # Imprimir la matriz de confusión
+  resumen_knn[index, 2:5] <- round(cmatrix$overall[1:4], 3)
+  index<-index+1
+}
+resumen_knn
