@@ -1,0 +1,70 @@
+############################## QC DATA ##########################################################
+qc<-getQC(mSetRaw_final)
+plotQC(qc)
+
+# Filtrar las muestras que pasan el control de calidad
+keep_final<-qc$mMed > 10.5 & qc$uMed > 10.5
+# Crear un nuevo objeto RGChannelSet con las muestras que pasan el control de calidad
+mSetFn_finalqc<-mSetFn_final[,keep_final]
+targets_finalqc<-targets_final[keep_final,]
+detP_finalqc<-detP_final[,keep_final]
+
+####################### ELIMINAR DATASETS DE CONTROLES ##########################################
+
+targets_final1 <- targets_final[!targets_final$GSE %in% c("GSE85210", "GSE87571", "GSE99863"), ]
+
+lista<-c("GSE116300", "GSE116992", "GSE116992_EPIC",
+         "GSE119778", "GSE125367", "GSE167230", "GSE167230_EPIC",
+         "GSE174555", "GSE218186", "GSE221745", "GSE55491",
+         "GSE66552", "GSE74432")
+
+targets1<-read.metharray.sheet(paste0("~/", "GSE108423"), pattern = "GSE108423")
+rgSet_final1<-read.metharray.exp(base=paste0("~/", "GSE108423"), targets=targets1)
+for (GSE in lista) {
+  targets<-read.metharray.sheet(paste0("~/", GSE), pattern = GSE)
+  rgSet<-read.metharray.exp(base=paste0("~/", GSE), targets=targets, force=T)
+  rgSet_final1<-combineArrays(rgSet_final1, rgSet,
+                             outType = c("IlluminaHumanMethylation450k"),
+                             verbose = TRUE)
+}
+rgSet_final1
+sampleNames(rgSet_final1)<-targets_final1$ID
+
+######################### ELIMINAR CLASES CON POCOS CASOS <10 #############################
+targets_final2 <- targets_final1[!targets_final1$GSE %in% c("GSE108423", "GSE221745", 
+                                                          "GSE167230", "GSE167230_EPIC"), ]
+targets_final2 <- targets_final2[!targets_final2$Disease %in% c("Weaver"), ]
+
+lista<-c("GSE116992", "GSE116992_EPIC", "GSE119778", "GSE125367",
+         "GSE174555", "GSE218186", "GSE55491", "GSE66552", "GSE74432")
+
+targets2<-read.metharray.sheet(paste0("~/", "GSE116300"), pattern = "GSE116300")
+rgSet_final2<-read.metharray.exp(base=paste0("~/", "GSE116300"), targets=targets2)
+for (GSE in lista) {
+  targets<-read.metharray.sheet(paste0("~/", GSE), pattern = GSE)
+  rgSet<-read.metharray.exp(base=paste0("~/", GSE), targets=targets, force=T)
+  rgSet_final2<-combineArrays(rgSet_final2, rgSet,
+                              outType = c("IlluminaHumanMethylation450k"),
+                              verbose = TRUE)
+}
+rgSet_final2
+sampleNames(rgSet_final2)<-targets_final2$ID
+
+######################### ELIMINAR CLASES CON POCOS CASOS <30 #########################
+targets_final3 <- targets_final2[!targets_final2$GSE %in% c("GSE174555", "GSE55491"), ]
+targets_final3 <- targets_final3[!targets_final3$Disease %in% c("Dup7"), ]
+
+lista<-c("GSE116992", "GSE116992_EPIC", "GSE119778", "GSE125367", "GSE218186", 
+         "GSE66552", "GSE74432")
+
+targets3<-read.metharray.sheet(paste0("~/", "GSE116300"), pattern = "GSE116300")
+rgSet_final3<-read.metharray.exp(base=paste0("~/", "GSE116300"), targets=targets3)
+for (GSE in lista) {
+  targets<-read.metharray.sheet(paste0("~/", GSE), pattern = GSE)
+  rgSet<-read.metharray.exp(base=paste0("~/", GSE), targets=targets, force=T)
+  rgSet_final3<-combineArrays(rgSet_final3, rgSet,
+                              outType = c("IlluminaHumanMethylation450k"),
+                              verbose = TRUE)
+}
+rgSet_final3
+sampleNames(rgSet_final3)<-targets_final3$ID
