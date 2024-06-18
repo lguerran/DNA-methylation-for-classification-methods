@@ -21,7 +21,7 @@ The data available in this repository is:
 - Subgroup data:
   - Remove low quality data
   - Remove control datasets
-  - > 10 cases per class
-  - > 30 cases per class
+  - "> 10 cases per class"
+  - "> 30 cases per class"
 
 Script base on the analysis available at: https://www.bioconductor.org/packages/release/workflows/vignettes/methylationArrayAnalysis/inst/doc/methylationArrayAnalysis.html
