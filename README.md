@@ -8,4 +8,19 @@ A total of 1732 methylome samples from patients with neurodevelopmental disorder
 This methodology could be implemented in clinical practice to resolve the diagnosis of these patients.
 
 The data available in this repository is:
-- General script 
+- General script:
+  - Loading data
+  - Quality control
+  - Normalisation
+  - Data exploration
+  - Filtering
+  - Probe-wise differential methylation
+  - Support Vector Machine Model
+  - k-Nearest Neighbor Model
+  
+- Subgroup data:
+  - Remove low quality data
+  - Remove control datasets
+  - >10 cases per class
+  - >30 cases per class
+
